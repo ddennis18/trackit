@@ -3,6 +3,7 @@
   margin: 0;
   border: none;
   box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 #root {
@@ -39,10 +40,10 @@
   font-weight: 600;
   padding: 8px;
   border-radius: 16px;
-  transition: 0.5s;
+  transition: 0.2s;
 }
 
-.add-txn-btn:hover {
+.control-btns button:hover {
   border-radius: 4px;
 }
 
@@ -109,12 +110,20 @@
   margin: 0 auto;
   padding: 32px;
   border-radius: 16px;
-
+  
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: left;
   gap: 10px;
+}
+#newTxnForm select{
+  background-color: #f0f0f0;
+  padding: 8px;
+}
+
+#newTxnForm label{
+  font-weight: 600;
 }
 
 #newTxnForm input,
