@@ -65,7 +65,7 @@ function NewTxnModal ({ closeFunction, addTxn }) {
               }
             }
           ></textarea>
-          <label htmlFor='txnTags'>Add Tags</label>
+          <label htmlFor='txnTags'>Add Category</label>
           <select
             name='txnTags'
             id='txnTags'
@@ -111,7 +111,7 @@ function App () {
 
   return (
     <div>
-      <Profile userName='jjd' />
+      <Profile userName='User' />
       <div className='control-btns'>
         <button
           className='add-txn-btn'

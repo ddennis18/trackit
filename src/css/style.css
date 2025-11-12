@@ -28,6 +28,7 @@
 }
 
 .control-btns {
+  margin-top: 16px;
   padding: 8px;
   display: flex;
   flex-direction: row;
@@ -55,20 +56,21 @@
   border-bottom: 2px solid black;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  gap: 4px;
+  align-items: flex-end;
+  height: 30px;
 }
 
 .tab {
-  padding: 2px 2px 0px 2px;
-  border: 2px solid white;
-  font-size: 24px;
-  border-radius: 8px 8px 0px 0px;
+  padding: 2px;
+  border: 2px solid black;
+  font-size: 1rem;
+  transition: .2s;
 }
 
 .tab:hover {
-  border: 2px solid black;
-  border-bottom: 0px;
+  background-color: black;
+  color: white;
+  font-size: 1.2rem;
 }
 
 .tab.active {
