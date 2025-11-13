@@ -22,5 +22,5 @@ const profileStyle={
   alignItems: "center",
   gap: "32px",
   padding: "8px",
-  boxShadow: "0px 5px 4px rgba(0, 0, 0, 0.2)"
+  boxShadow: "inset 0px -5px 2px rgba(0, 0, 0, 0.2)"
 }

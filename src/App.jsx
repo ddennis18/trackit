@@ -5,19 +5,20 @@ import Transaction from './components/Transaction.jsx'
 import Tabs from './components/Tabs.jsx'
 import './css/style.css'
 
-let expenseCategories = ['food', 'transport', 'internet', 'rent', 'miscellaneous']
-let incomeCategories = ['loan', 'friend', 'gift', 'scholarship', 'parent', 'miscellaneous']
+let expenseCategories = ['food', 'transport', 'internet', 'rent']
+let incomeCategories = ['loan', 'friend', 'gift', 'scholarship', 'parent']
+let categories = [...expenseCategories, ...incomeCategories]
 
-function NewTxnModal ({ closeFunction, addTxn }) {
+function NewTxnModal ({ onClose, onFinish }) {
   const [selectedTxnType, setSelectedTxnType] = useState('exp')
-  const [category, setCategory] = useState(["miscellaneous"])
+  const [category, setCategory] = useState(['---'])
 
   let newTxnData = {
     type: 'exp',
     timeStamp: new Date().toLocaleString(),
     amount: 100,
-    description: 'j',
-    category: 'miscellaneous'
+    description: '',
+    category: '---'
   }
   return (
     <div className='modalOverlay'>
@@ -34,7 +35,7 @@ function NewTxnModal ({ closeFunction, addTxn }) {
             }}
             onClick={e => {
               e.preventDefault()
-              closeFunction()
+              onClose()
             }}
           >
             x
@@ -53,29 +54,37 @@ function NewTxnModal ({ closeFunction, addTxn }) {
             <option value='inc'>Income</option>
           </select>
           <label htmlFor='amount'>Amount</label>
-          <input type='number' name='amount' id='amount' onChange={(e)=>{newTxnData.amount=e.target.value}}/>
+          <input
+            type='number'
+            name='amount'
+            id='amount'
+            onChange={e => (newTxnData.amount = e.target.value)}
+          />
           <label htmlFor='description'>Description</label>
           <textarea
             type='text'
             name='decription'
             placeholder='Enter Description...'
-            onChange={
-              (e)=>{
-                newTxnData.details = e.target.value
-              }
-            }
+            onChange={e => {
+              newTxnData.details = e.target.value
+            }}
           ></textarea>
           <label htmlFor='txnTags'>Add Category</label>
           <select
             name='txnTags'
             id='txnTags'
+            defaultValue='---'
             onChange={events => {
               newTxnData.category = events.target.value
             }}
           >
-            {(selectedTxnType === 'exp' ? expenseCategories : incomeCategories).map(t => {
-              return <option>{t}</option>
+            {(selectedTxnType === 'exp'
+              ? expenseCategories
+              : incomeCategories
+            ).map(t => {
+              return <option value={t}>{t}</option>
             })}
+            <option value='---'>{'---'}</option>
           </select>
 
           <button
@@ -92,9 +101,8 @@ function NewTxnModal ({ closeFunction, addTxn }) {
             onClick={e => {
               e.preventDefault()
               newTxnData.type = selectedTxnType
-              console.log(newTxnData)
-              addTxn(newTxnData)
-              closeFunction()
+              onFinish(newTxnData)
+              onClose()
             }}
           >
             Add Transaction
@@ -105,8 +113,16 @@ function NewTxnModal ({ closeFunction, addTxn }) {
   )
 }
 
+function txnFilter (t, { type, cat }) {
+  const typeCheck = type === 'all' || t.type === type
+  const categoryCheck = cat === '---' || t.category === cat
+  return typeCheck && categoryCheck
+}
+
 function App () {
   const [addTxnModalIsopen, setAddTxnModalIsopen] = useState(false)
+  const [filterCategory, setFilterCategory] = useState('---')
+  const [filterType, setFilterType] = useState('all')
   const [transactions, setTransactions] = useState([])
 
   return (
@@ -122,22 +138,52 @@ function App () {
         <button className='manageTagsBtn'>Add Tag</button>
       </div>
       <div className='txns'>
-        <Tabs tabList={['All', 'Expenses', 'Income']} />
+        <div className='filter-controls'>
+          <label htmlFor='type-filter'>Type: </label>
+          <select
+            name=''
+            id='type-filter'
+            defaultValue='all'
+            onChange={e => setFilterType(e.target.value)}
+          >
+            <option value='all' selected>
+              All
+            </option>
+            <option value='inc'>Income</option>
+            <option value='exp'>Expense</option>
+          </select>
+          <label htmlFor='categoryFilter'>Category: </label>
+          <select
+            name='categoryFilter'
+            id='categoryFilter'
+            defaultValue='---'
+            onChange={e => setFilterCategory(e.target.value)}
+          >
+            {(filterType === 'inc'
+              ? incomeCategories
+              : filterType === 'exp'
+              ? expenseCategories
+              : categories
+            ).map(c => (
+              <option value={c}>{c}</option>
+            ))}
+            <option value={'---'}>{'---'}</option>
+          </select>
+        </div>
         <div>
-          {transactions.map(txn => {
-            return <Transaction {...txn} />
-          })}
+          {transactions
+            .filter(t =>
+              txnFilter(t, { type: filterType, cat: filterCategory })
+            )
+            .map(txn => {
+              return <Transaction {...txn} />
+            })}
         </div>
       </div>
       {addTxnModalIsopen && (
         <NewTxnModal
-          closeFunction={() => {
-            setAddTxnModalIsopen(false)
-          }}
-          addTxn={t => {
-            console.log(t)
-            setTransactions([...transactions, t])
-          }}
+          onClose={() => setAddTxnModalIsopen(false)}
+          onFinish={t => setTransactions([...transactions, t])}
         />
       )}
     </div>
