@@ -1,5 +1,6 @@
 import {useState} from 'react'
 
+//Modal for adding new Transactions
 export function TxnModal ({ onClose, onFinish, incomeCategories, expenseCategories }) {
   const [selectedTxnType, setSelectedTxnType] = useState('exp')
 
@@ -11,7 +12,7 @@ export function TxnModal ({ onClose, onFinish, incomeCategories, expenseCategori
     category: '---'
   }
   return (
-    <div className='fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.2)] flex justify-center items-center'>
+    <div className='fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.2)] flex justify-center items-center backdrop-blur-sm'>
       <div>
         <form
           className='bg-white p-4 rounded-xl flex flex-col gap-4 min-w-[500px]'
@@ -88,7 +89,7 @@ export function TxnModal ({ onClose, onFinish, incomeCategories, expenseCategori
           {/*Submit-button */}
           <button
             type='submit'
-            className='text-sm font-semibold bg-green-600 w-max p-2 rounded-lg text-white self-center hover:bg-green-900'
+            className='text-sm font-semibold bg-green-600 w-max p-2 rounded-lg text-white self-center hover:bg-green-600/80'
             onClick={e => {
               e.preventDefault()
               newTxnData.type = selectedTxnType
