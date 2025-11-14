@@ -15,11 +15,23 @@ function txnFilter (t, { type, cat }) {
   return typeCheck && categoryCheck
 }
 
+function sortTxn (txns, sortCriteria, sortOrder) {
+  console.log(sortCriteria, sortOrder)
+  const criteria = t => (sortCriteria === 'time' ? t.timeStamp : t.amount)
+  txns.sort((a, b) => criteria(a) - criteria(b))
+  if (sortOrder === 'desc') {
+    txns.reverse()
+  }
+  return txns
+}
+
 export default function Dashboard () {
   const [addTxnModalIsopen, setAddTxnModalIsopen] = useState(false)
   const [filterCategory, setFilterCategory] = useState('---')
   const [filterType, setFilterType] = useState('all')
   const [transactions, setTransactions] = useState([])
+  const [sortCriteria, setSortCriteria] = useState('time')
+  const [sortOrder, setSortOrder] = useState('desc')
 
   return (
     <div className='space-y-2 w-full'>
@@ -33,14 +45,12 @@ export default function Dashboard () {
         >
           Add Txn
         </button>
-        <button className='px-2 py-1 bg-black text-white text-sm rounded-lg'>
-          Add Tag
-        </button>
       </div>
 
       {/*Transactions*/}
-      <div className='pl-2 space-y-2'>
-        <div className='space-x-4'>
+      <div className='space-y-2'>
+        {/*Filter*/}
+        <div className='px-2 space-x-4  text-xs'>
           <label htmlFor='typeFilter' className='font-semibold'>
             Type:{' '}
           </label>
@@ -77,15 +87,43 @@ export default function Dashboard () {
             ))}
             <option value={'---'}>{'---'}</option>
           </select>
+          <label htmlFor='sortBy' className='font-semibold'>
+            Sort By:
+          </label>
+          <select
+            name='sortBy'
+            id='sortBy'
+            className='px-2 py-1 bg-gray-200 rounded-lg text-sm'
+            onChange={e => setSortCriteria(e.target.value)}
+          >
+            <option value='time'>time</option>
+            <option value='amount'>amount</option>
+          </select>
+          <label htmlFor='order' className='font-semibold'>
+            Order:
+          </label>
+          <select
+            name='order'
+            id='order'
+            className='px-2 py-1 bg-gray-200 rounded-lg text-sm'
+            onChange={e => setSortOrder(e.target.value)}
+          >
+            <option value='desc'>Descending</option>
+            <option value='asce'>Ascending</option>
+          </select>
         </div>
         <div>
-          {transactions
-            .filter(t =>
-              txnFilter(t, { type: filterType, cat: filterCategory })
-            )
-            .map(txn => {
-              return <Transaction {...txn} />
-            })}
+          {sortTxn(
+            [
+              ...transactions.filter(t =>
+                txnFilter(t, { type: filterType, cat: filterCategory })
+              )
+            ],
+            sortCriteria,
+            sortOrder
+          ).map(txn => {
+            return <Transaction {...txn} />
+          })}
         </div>
       </div>
       {addTxnModalIsopen && (

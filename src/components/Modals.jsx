@@ -6,7 +6,7 @@ export function TxnModal ({ onClose, onFinish, incomeCategories, expenseCategori
 
   let newTxnData = {
     type: 'exp',
-    timeStamp: new Date().toLocaleString(),
+    timeStamp: null,
     amount: 100,
     description: '',
     category: '---'
@@ -93,6 +93,7 @@ export function TxnModal ({ onClose, onFinish, incomeCategories, expenseCategori
             onClick={e => {
               e.preventDefault()
               newTxnData.type = selectedTxnType
+              newTxnData.timeStamp = new Date();
               onFinish(newTxnData)
               onClose()
             }}
