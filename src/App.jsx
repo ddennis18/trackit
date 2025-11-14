@@ -1,13 +1,13 @@
 import { SideBar, NavBar } from './components/Layout.jsx'
-import Dashboard  from "./pages/Dashboard.jsx";
+import Dashboard from './pages/Dashboard.jsx'
+import Home from './pages/Home.jsx'
 
 function App () {
   return (
     <div>
       <NavBar />
-      <SideBar />
-      <Dashboard/>
-    </div>  
+      <Home />
+    </div>
   )
 }
 

@@ -4,7 +4,6 @@ import Profile from '../components/Profile.jsx'
 import Transaction from '../components/Transaction.jsx'
 import Tabs from '../components/Tabs.jsx'
 import { TxnModal } from '../components/Modals.jsx'
-import '../css/style.css'
 
 let expenseCategories = ['food', 'transport', 'internet', 'rent']
 let incomeCategories = ['loan', 'friend', 'gift', 'scholarship', 'parent']
@@ -23,7 +22,7 @@ export default function Dashboard () {
   const [transactions, setTransactions] = useState([])
 
   return (
-    <div className='space-y-2 ml-[150px]'>
+    <div className='space-y-2 w-full'>
       <Profile userName='User' />
 
       {/*Control buttons*/}

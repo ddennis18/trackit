@@ -2,7 +2,7 @@ export default function Profile (props) {
   return (
     <div
       id='profile'
-      className='flex flex-row items-start gap-4 px-2 py-4 border-b-2 border-black shadow-lg'
+      className='flex flex-row items-start gap-4 px-2 py-4 border-b-2 border-black'
     >
       <img
         src={null}
