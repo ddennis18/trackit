@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Layout ({ children }) {
   return (
@@ -23,10 +24,10 @@ export function NavBar () {
     <div className='w-full bg-white shadow-lg py-2 px-4 flex justify-between border-black border-b-2 items-center'>
       <h2 className='text-3xl font-bold'>Track.It</h2>
       <nav className='hidden space-x-4 items-center md:block'>
-        <a href=''>Home</a>
-        <a href=''>Charts</a>
-        <a href=''>About Us</a>
-        <a href=''>Contact Us</a>
+        <Link to='/'>Home</Link>
+        <Link to='/dashboard'>Dashboard</Link>
+        <Link to='/about'>About</Link>
+        <Link to='/support'>Support</Link>
       </nav>
       <button className='hidden bg-black text-white px-2 py-1 rounded-full md:block hover:bg-black/80'>
         Login
@@ -39,18 +40,18 @@ export function NavBar () {
       {isOpen && (
         <div className='fixed top-[50px] right-0 w-full bg-white'>
           <nav className='grid grid-cols-1'>
-            <a href='' className='p-4 hover:bg-gray-200'>
+            <Link to='/' className='p-4 hover:bg-gray-200' onClick={()=>setIsOpen(false)}>
               Home
-            </a>
-            <a href='' className='p-4 hover:bg-gray-200'>
-              Charts
-            </a>
-            <a href='' className='p-4 hover:bg-gray-200'>
-              About Us
-            </a>
-            <a href='' className='p-4 hover:bg-gray-200'>
-              Contact Us
-            </a>
+            </Link>
+            <Link to='/dashboard' className='p-4 hover:bg-gray-200' onClick={()=>setIsOpen(false)}>
+              Dashboard
+            </Link>
+            <Link to='/about' className='p-4 hover:bg-gray-200' onClick={()=>setIsOpen(false)}>
+              About
+            </Link>
+            <Link to='/support' className='p-4 hover:bg-gray-200' onClick={()=>setIsOpen(false)}>
+              Services
+            </Link>
             <button className='text-left p-4 hover:bg-gray-200'>Logout</button>
           </nav>
         </div>
