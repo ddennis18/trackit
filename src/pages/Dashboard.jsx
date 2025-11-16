@@ -3,7 +3,8 @@ import { useState } from 'react'
 import Profile from '../components/Profile.jsx'
 import Transaction from '../components/Transaction.jsx'
 import Tabs from '../components/Tabs.jsx'
-import { TxnModal } from '../components/Modals.jsx'
+import Modal from '../components/Modal.jsx'
+import NewTxnForm from '../components/Forms.jsx'
 
 let expenseCategories = ['food', 'transport', 'internet', 'rent']
 let incomeCategories = ['loan', 'friend', 'gift', 'scholarship', 'parent']
@@ -61,9 +62,7 @@ export default function Dashboard () {
             className='px-2 py-1 bg-gray-200 rounded-lg text-sm'
             onChange={e => setFilterType(e.target.value)}
           >
-            <option value='all' selected>
-              All
-            </option>
+            <option value='all'>All</option>
             <option value='inc'>Income</option>
             <option value='exp'>Expense</option>
           </select>
@@ -127,12 +126,14 @@ export default function Dashboard () {
         </div>
       </div>
       {addTxnModalIsopen && (
-        <TxnModal
-          onClose={() => setAddTxnModalIsopen(false)}
-          onFinish={t => setTransactions([...transactions, t])}
-          incomeCategories={incomeCategories}
-          expenseCategories={expenseCategories}
-        />
+        <Modal>
+          <NewTxnForm
+            onClose={() => setAddTxnModalIsopen(false)}
+            onFinish={t => setTransactions([...transactions, t])}
+            incomeCategories={incomeCategories}
+            expenseCategories={expenseCategories}
+          />
+        </Modal>
       )}
     </div>
   )
