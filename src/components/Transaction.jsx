@@ -14,12 +14,7 @@ export default function Transaction ({ type, amount, timeStamp, category }) {
       <button className='bg-gray-200 w-min px-4 py-1 hover:bg-gray-400'>
         Details
       </button>
-      <span className='font-normal text-right'>{`\
-      ${timeStamp.getHours().toString().padStart(2, '0')}:${timeStamp
-        .getMinutes()
-        .toString()
-        .padStart(2, '0')} -\
-         ${timeStamp.getDate()}/${timeStamp.getMonth()}/${timeStamp.getYear()}`}</span>
+      <span className='font-normal text-right'>{timeStamp}</span>
     </div>
   )
 }

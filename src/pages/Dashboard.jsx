@@ -129,7 +129,7 @@ export default function Dashboard () {
         <Modal>
           <NewTxnForm
             onClose={() => setAddTxnModalIsopen(false)}
-            onFinish={t => setTransactions([...transactions, t])}
+            appendTxn={t => setTransactions([...transactions, t])}
             incomeCategories={incomeCategories}
             expenseCategories={expenseCategories}
           />
