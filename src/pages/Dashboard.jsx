@@ -17,13 +17,26 @@ function txnFilter (t, { type, cat }) {
 }
 
 function sortTxn (txns, sortCriteria, sortOrder) {
-  console.log(sortCriteria, sortOrder)
   const criteria = t => (sortCriteria === 'time' ? t.timeStamp : t.amount)
   txns.sort((a, b) => criteria(a) - criteria(b))
   if (sortOrder === 'desc') {
     txns.reverse()
   }
   return txns
+}
+
+function computeStats(txns) {
+  let totalExpenses = 0;
+  let totalIncome = 0;
+  txns.forEach((t)=>{
+    if(t.type=='income'){
+      totalIncome+=t.amount
+    }
+    else{
+      totalExpenses+=t.amount
+    }
+  })
+  return {net:totalIncome-totalExpenses, income:totalIncome, expense:totalExpenses}
 }
 
 export default function Dashboard () {
@@ -36,7 +49,7 @@ export default function Dashboard () {
 
   return (
     <div className='space-y-2 w-full'>
-      <Profile userName='User' />
+      <Profile userName='User' {...computeStats(transactions)}/>
 
       {/*Control buttons*/}
       <div className='space-x-1 pl-2'>
@@ -50,8 +63,8 @@ export default function Dashboard () {
 
       {/*Transactions*/}
       <div className='space-y-2'>
-        {/*Filter*/}
-        <div className='px-2 space-x-4  text-xs'>
+        {/*Filter and Sorting*/}
+        <div className='px-2 space-x-2  text-[.7rem] md:text-sm'>
           <label htmlFor='typeFilter' className='font-semibold'>
             Type:{' '}
           </label>
@@ -59,12 +72,12 @@ export default function Dashboard () {
             name=''
             id='typeFilter'
             defaultValue='all'
-            className='px-2 py-1 bg-gray-200 rounded-lg text-sm'
+            className='px-2 py-1 bg-gray-200 rounded-lg'
             onChange={e => setFilterType(e.target.value)}
           >
             <option value='all'>All</option>
-            <option value='inc'>Income</option>
-            <option value='exp'>Expense</option>
+            <option value='income'>Income</option>
+            <option value='expense'>Expense</option>
           </select>
           <label htmlFor='categoryFilter' className='font-semibold'>
             Category:{' '}
@@ -72,13 +85,13 @@ export default function Dashboard () {
           <select
             name='categoryFilter'
             id='categoryFilter'
-            className='px-2 py-1 bg-gray-200 rounded-lg text-sm'
+            className='px-2 py-1 bg-gray-200 rounded-lg'
             defaultValue='---'
             onChange={e => setFilterCategory(e.target.value)}
           >
-            {(filterType === 'inc'
+            {(filterType === 'income'
               ? incomeCategories
-              : filterType === 'exp'
+              : filterType === 'expense'
               ? expenseCategories
               : categories
             ).map(c => (
@@ -92,7 +105,7 @@ export default function Dashboard () {
           <select
             name='sortBy'
             id='sortBy'
-            className='px-2 py-1 bg-gray-200 rounded-lg text-sm'
+            className='px-2 py-1 bg-gray-200 rounded-lg'
             onChange={e => setSortCriteria(e.target.value)}
           >
             <option value='time'>time</option>
@@ -104,13 +117,14 @@ export default function Dashboard () {
           <select
             name='order'
             id='order'
-            className='px-2 py-1 bg-gray-200 rounded-lg text-sm'
+            className='px-2 py-1 bg-gray-200 rounded-lg'
             onChange={e => setSortOrder(e.target.value)}
           >
             <option value='desc'>Descending</option>
             <option value='asce'>Ascending</option>
           </select>
         </div>
+        {/*display*/}
         <div>
           {sortTxn(
             [
@@ -121,7 +135,16 @@ export default function Dashboard () {
             sortCriteria,
             sortOrder
           ).map(txn => {
-            return <Transaction {...txn} />
+            return (
+              <Transaction
+                onDelete={() => {
+                  setTransactions([
+                    ...transactions.filter(t => t.id !== txn.id)
+                  ])
+                }}
+                {...txn}
+              />
+            )
           })}
         </div>
       </div>
@@ -129,7 +152,13 @@ export default function Dashboard () {
         <Modal>
           <NewTxnForm
             onClose={() => setAddTxnModalIsopen(false)}
-            appendTxn={t => setTransactions([...transactions, t])}
+            appendTxn={t => {
+              t.id =
+                transactions.length === 0
+                  ? 0
+                  : transactions[transactions.length - 1].id + 1
+              setTransactions([...transactions, t])
+            }}
             incomeCategories={incomeCategories}
             expenseCategories={expenseCategories}
           />

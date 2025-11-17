@@ -7,7 +7,7 @@ export default function Layout ({ children }) {
       <header>
         <NavBar />
       </header>
-      <main className='w-[90%] mx-[auto] min-h-[100vh] bg-gray-50 shadow-xl'>
+      <main className='w-[95%] md:w-[80%] mx-[auto] min-h-[100vh] bg-gray-50 shadow-xl'>
         {children}
       </main>
       <footer>

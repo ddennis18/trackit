@@ -9,7 +9,7 @@ export default function NewTxnForm ({
   incomeCategories,
   expenseCategories
 }) {
-  const [selectedTxnType, setSelectedTxnType] = useState('exp')
+  const [selectedTxnType, setSelectedTxnType] = useState('expense')
 
   const schema = yup.object().shape({
     type: yup.string().required(),
@@ -24,7 +24,7 @@ export default function NewTxnForm ({
   })
 
   let newTxnData = {
-    type: 'exp',
+    type: 'expense',
     timeStamp: null,
     amount: 0,
     description: '',
@@ -32,7 +32,7 @@ export default function NewTxnForm ({
   }
 
   const submit = data => {
-    console.log(data)
+    onClose()
     appendTxn(data)
   }
 
@@ -65,8 +65,8 @@ export default function NewTxnForm ({
           setSelectedTxnType(event.target.value)
         }}
       >
-        <option value='exp'>Expense</option>
-        <option value='inc'>Income</option>
+        <option value='expense'>Expense</option>
+        <option value='income'>Income</option>
       </select>
 
       {/* Input Field for setting the time Stamp */}
@@ -115,7 +115,7 @@ export default function NewTxnForm ({
           newTxnData.category = events.target.value
         }}
       >
-        {(selectedTxnType === 'exp' ? expenseCategories : incomeCategories).map(
+        {(selectedTxnType === 'expense' ? expenseCategories : incomeCategories).map(
           t => {
             return <option value={t}>{t}</option>
           }
