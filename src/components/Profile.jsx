@@ -7,7 +7,7 @@ export default function Profile ({ userName, net, income, expense }) {
       <img
         src={null}
         alt=''
-        className='w-20 h-20 md:w-25 md:h-25 bg-gray-200 rounded-full border-2 border-dashed object-center '
+        className='w-20 h-20 md:w-25 md:h-25 bg-secondary rounded-full border-2 border-dashed object-center '
       />
       <div className='space-y-1'>
         <h1 className='text-4xl font-semibold'>{userName}</h1>

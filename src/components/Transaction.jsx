@@ -16,7 +16,7 @@ export default function Transaction ({
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (
-    <div className='border-gray-500 border-b-1 grid grid-cols-4 md:grid-cols-6 text-xs items-center px-2 hover:bg-gray-100'>
+    <div className='border-theme-one border-b-1 grid grid-cols-4 md:grid-cols-6 text-xs items-center px-2 hover:bg-secondary'>
       <span
         className={`text-${type === 'expense' ? '[#ff0000]' : '[#00ff00]'}`}
       >
@@ -33,13 +33,13 @@ export default function Transaction ({
       <span className='md:hidden'></span>
       <span className='md:hidden'></span>
       <button
-        className='w-min ml-[auto] px-4 py-1 hover:bg-gray-400'
+        className='w-min ml-[auto] px-4 py-1 hover:bg-theme-one'
         onClick={() => setIsExpanded(true)}
       >
         Details
       </button>
       <button
-        className='text-[#ff0000] w-min ml-[auto] px-4 py-1 bg-gray-200 hover:bg-gray-400'
+        className='text-[#ff0000] w-min ml-[auto] px-4 py-1 bg-secondary hover:bg-theme-one'
         onClick={onDelete}
       >
         Delete
@@ -50,7 +50,7 @@ export default function Transaction ({
         <Modal>
           <div className='bg-background p-4 rounded-xl flex flex-col gap-2 shadow-xl min-w-[300px] text-sm'>
             <button
-              className='hover:bg-gray-200 rounded-full px-2 text-xl self-end'
+              className='hover:bg-secondary rounded-full px-2 text-xl self-end'
               onClick={() => setIsExpanded(false)}
             >
               ×
@@ -75,7 +75,7 @@ export default function Transaction ({
             <p>
               <b>Details:</b>
             </p>
-            <p className='border-gray-200 border-1 p-2'>{description}</p>
+            <p className='border-secondary border-1 p-2'>{description}</p>
             <p>
               <b>Date:</b> {timeStamp.split('T')[0]}
             </p>
@@ -83,7 +83,7 @@ export default function Transaction ({
               <b>Time:</b> {timeStamp.split('T')[1]}
             </p>
             <button
-              className='bg-[#ff0000] font-semibold text-white rounded-lg py-2 px-4 self-center'
+              className='bg-[#ff0000] font-semibold text-background rounded-lg py-2 px-4 self-center'
               onClick={() => {
                 onDelete()
                 setIsExpanded(false)

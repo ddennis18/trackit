@@ -3,4 +3,6 @@
 @theme{
     --color-background: white;
     --color-primary: black;
+    --color-secondary: rgba(240,240,240);
+    --color-theme-one: rgba(224,224,224)
 }

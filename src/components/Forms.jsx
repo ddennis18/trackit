@@ -42,13 +42,13 @@ export default function NewTxnForm ({
       onSubmit={handleSubmit(submit)}
     >
       <button
-        className='self-end text-3xl px-2 rounded-full hover:bg-gray-200'
+        className='self-end text-3xl px-2 rounded-full hover:bg-secondary'
         onClick={e => {
           e.preventDefault()
           onClose()
         }}
       >
-        x
+        ×
       </button>
       <h2 className='text-2xl font-semibold text-cente mb-4'>
         Add A New Transaction!
@@ -58,7 +58,7 @@ export default function NewTxnForm ({
         Transaction Type
       </label>
       <select
-        className='px-2 py-1 bg-gray-200 rounded-lg w-min'
+        className='px-2 py-1 bg-secondary rounded-lg w-min'
         {...register('type')}
         onChange={event => {
           newTxnData.type = event.target.value
@@ -83,7 +83,7 @@ export default function NewTxnForm ({
       </label>
       <input
         type='number'
-        className='px-2 py-1 rounded-lg border-1 border-gray-500'
+        className='px-2 py-1 rounded-lg border-1 border-theme-one'
         defaultValue='0'
         {...register('amount')}
         onChange={e => {
@@ -97,7 +97,7 @@ export default function NewTxnForm ({
       <textarea
         type='text'
         placeholder='Enter Description...'
-        className='px-2 py-1 rounded-lg border-1 border-gray-500'
+        className='px-2 py-1 rounded-lg border-1 border-theme-one'
         {...register('description')}
         onChange={e => {
             newTxnData.details = e.target.value
@@ -110,7 +110,7 @@ export default function NewTxnForm ({
       <select
         defaultValue='---'
         {...register('category')}
-        className='px-2 py-1 bg-gray-200 rounded-lg w-min'
+        className='px-2 py-1 bg-secondary rounded-lg w-min'
         onChange={events => {
           newTxnData.category = events.target.value
         }}
@@ -126,7 +126,7 @@ export default function NewTxnForm ({
       {/*Submit-button */}
       <button
         type='submit'
-        className='text-sm font-semibold bg-green-600 w-max p-2 rounded-lg text-white self-center hover:bg-green-600/80'
+        className='text-sm font-semibold bg-green-600 w-max p-2 rounded-lg text-background self-center hover:bg-green-600/80'
       >
         Add Transaction
       </button>

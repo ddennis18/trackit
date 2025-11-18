@@ -1,0 +1,13 @@
+import { useState } from 'react'
+
+/*A Hook that saves data to a backend every time the data changes */
+export function useData (defaultValue = null) {
+  const [data, setData] = useState(defaultValue)
+  return [
+    data,
+    d => {
+      console.log(d)
+      setData(d)
+    }
+  ]
+}

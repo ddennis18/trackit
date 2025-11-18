@@ -21,7 +21,7 @@ export function NavBar () {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className='w-full bg-white shadow-lg py-2 px-4 flex justify-between border-black border-b-2 items-center'>
+    <div className='w-full bg-background shadow-lg py-2 px-4 flex justify-between border-black border-b-2 items-center'>
       <h2 className='text-3xl font-bold'>Track.It</h2>
       <nav className='hidden space-x-4 items-center md:block'>
         <Link to='/'>Home</Link>
@@ -29,7 +29,7 @@ export function NavBar () {
         <Link to='/about'>About</Link>
         <Link to='/support'>Support</Link>
       </nav>
-      <button className='hidden bg-black text-white px-2 py-1 rounded-full md:block hover:bg-black/80'>
+      <button className='hidden bg-black text-background px-2 py-1 rounded-full md:block hover:bg-black/80'>
         Login
       </button>
       <button className='md:hidden text-3xl' onClick={() => setIsOpen(!isOpen)}>
@@ -38,21 +38,21 @@ export function NavBar () {
 
       {/*Mobile Nav Links */}
       {isOpen && (
-        <div className='fixed top-[50px] right-0 w-full bg-white'>
+        <div className='fixed top-[50px] right-0 w-full bg-background'>
           <nav className='grid grid-cols-1'>
-            <Link to='/' className='p-4 hover:bg-gray-200' onClick={()=>setIsOpen(false)}>
+            <Link to='/' className='p-4 hover:bg-secondary' onClick={()=>setIsOpen(false)}>
               Home
             </Link>
-            <Link to='/dashboard' className='p-4 hover:bg-gray-200' onClick={()=>setIsOpen(false)}>
+            <Link to='/dashboard' className='p-4 hover:bg-secondary' onClick={()=>setIsOpen(false)}>
               Dashboard
             </Link>
-            <Link to='/about' className='p-4 hover:bg-gray-200' onClick={()=>setIsOpen(false)}>
+            <Link to='/about' className='p-4 hover:bg-secondary' onClick={()=>setIsOpen(false)}>
               About
             </Link>
-            <Link to='/support' className='p-4 hover:bg-gray-200' onClick={()=>setIsOpen(false)}>
+            <Link to='/support' className='p-4 hover:bg-secondary' onClick={()=>setIsOpen(false)}>
               Services
             </Link>
-            <button className='text-left p-4 hover:bg-gray-200'>Logout</button>
+            <button className='text-left p-4 hover:bg-secondary'>Logout</button>
           </nav>
         </div>
       )}
