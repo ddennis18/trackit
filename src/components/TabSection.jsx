@@ -10,7 +10,7 @@ export default function TabSection ({ tabList, contentList, defaultTab = 0 }) {
           return (
             <button
               className={`border-black border-t-${
-                currentTab == i ? '1' : '4'
+                currentTab == i ? '4' : '1'
               } hover:font-semibold border-l-1 border-r-1 px-1 text-${
                 currentTab == i ? 'sm' : 'xs'
               } font-${currentTab == i ? 'semibold' : 'normal'}`}

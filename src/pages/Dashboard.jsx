@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import Profile from '../components/Profile.jsx'
 import Transaction from '../components/Transaction.jsx'
@@ -36,6 +36,18 @@ function sortTxn (txns, sortCriteria, sortOrder) {
   return txns
 }
 
+function zipLongest (...arrays) {
+  const length = Math.max(...arrays.map(arr => arr.length))
+  return Array.from({ length }, (_, i) => arrays.map(arr => arr[i]))
+}
+
+function txnPair (txns) {
+  const incomeList = txns.filter(t => t.type == 'income')
+  const expenseList = txns.filter(t => t.type == 'expense')
+  console.log(zipLongest(incomeList, expenseList))
+  return zipLongest(incomeList, expenseList)
+}
+
 function computeStats (txns) {
   let totalExpenses = 0
   let totalIncome = 0
@@ -62,7 +74,7 @@ export default function Dashboard () {
       id: 0,
       amount: 1,
       timeStamp: '2024-01-01T00:00',
-      type: '',
+      type: 'expense',
       description: ',',
       category: '---'
     }
@@ -70,7 +82,9 @@ export default function Dashboard () {
   const [sortCriteria, setSortCriteria] = useState('time')
   const [sortOrder, setSortOrder] = useState('desc')
   const [startDate, setStartDate] = useState('01-01-1999')
-  {/*Default value for end date is tomorrow thats why we have this 'fancy' code here*/}
+  {
+    /*Default value for end date is tomorrow thats why we have this 'fancy' code here*/
+  }
   const [endDate, setEndDate] = useState(
     formatDate(
       new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
@@ -81,6 +95,11 @@ export default function Dashboard () {
 
   const [sortTableCriteria, setTableSortCriteria] = useState('time')
   const [sortTableOrder, setTableSortOrder] = useState('desc')
+
+  useEffect(() => {
+    setTransactions(JSON.parse(localStorage.getItem('txn')) || [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function TransactionList () {
     {
@@ -232,20 +251,36 @@ export default function Dashboard () {
           </select>
         </div>
         <div className='px-2'>
-          {sortTxn([...transactions], sortTableCriteria, sortTableOrder).map(
-            txn => {
-              return (
-                <Transaction
-                  onDelete={() => {
-                    setTransactions([
-                      ...transactions.filter(t => t.id !== txn.id)
-                    ])
-                  }}
-                  {...txn}
-                />
-              )
-            }
-          )}
+          <table className='min-w-full border-collapse border border-gray-300'>
+            <thead>
+              <tr>
+                <th className='px-4 py-1 border-theme-one border-1'>Expense</th>
+                <th className='px-4 py-1 border-theme-one border-1'>Income</th>
+              </tr>
+            </thead>
+            <tbody>
+              {txnPair(
+                sortTxn([...transactions], sortTableCriteria, sortTableOrder)
+              ).map(pair => {
+                return (
+                  <tr className='text-sm'>
+                    <td className='px-4 py-1 border-theme-one border-1'>
+                      <div className='flex justify-between'>
+                        <span>{pair[1]?.amount}</span>{' '}
+                        <span>{(pair[1]?.category!==undefined?("Category: "+ pair[1]?.category):"")}</span>
+                      </div>
+                    </td>
+                    <td className='px-4 py-1 border-theme-one border-1'>
+                      <div className='flex justify-between'>
+                        <span>{pair[0]?.amount}</span>{' '}
+                        <span>{(pair[0]?.category!==undefined?("Category: "+ pair[0]?.category):"")}</span>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     )

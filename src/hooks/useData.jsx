@@ -6,7 +6,7 @@ export function useData (defaultValue = null) {
   return [
     data,
     d => {
-      console.log(d)
+      localStorage.setItem("txn", JSON.stringify(d));
       setData(d)
     }
   ]
