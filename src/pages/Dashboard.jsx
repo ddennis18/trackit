@@ -6,11 +6,13 @@ import TabSection from '../components/TabSection.jsx'
 import Modal from '../components/Modal.jsx'
 import NewTxnForm from '../components/Forms.jsx'
 import { useData } from '../hooks/useData.jsx'
+import { Pie, PieChart, Cell, Label, LabelList } from 'recharts'
 
 let expenseCategories = ['food', 'transport', 'internet', 'rent']
 let incomeCategories = ['loan', 'friend', 'gift', 'scholarship', 'parent']
 let categories = [...expenseCategories, ...incomeCategories]
 
+//#region utilities
 function formatDate (date) {
   console.log(date)
   return date.split('-').reverse().join('-')
@@ -65,7 +67,22 @@ function computeStats (txns) {
   }
 }
 
+function getCategory (txns, type) {
+  txns = txns.filter(t => t.type == type)
+  const categories = type == 'income' ? incomeCategories : expenseCategories
+  const totals = Array(categories.length)
+  totals.fill(0)
+  txns.forEach((t)=>{
+    totals[categories.indexOf(t.category)] += t.amount;
+  })
+  return totals.map((t, i)=>{
+    return {name: categories[i], value: t}
+  }).filter(d=>d.value!=0)
+}
+
+//#endregion
 export default function Dashboard () {
+  //#region definitions
   const [addTxnModalIsopen, setAddTxnModalIsopen] = useState(false)
   const [filterCategory, setFilterCategory] = useState('---')
   const [filterType, setFilterType] = useState('all')
@@ -101,9 +118,11 @@ export default function Dashboard () {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  //endregion
+
   function TransactionList () {
     {
-      /*Transactions*/
+      /*Transactions List*/
     }
     return (
       <div className='space-y-2'>
@@ -263,17 +282,25 @@ export default function Dashboard () {
                 sortTxn([...transactions], sortTableCriteria, sortTableOrder)
               ).map(pair => {
                 return (
-                  <tr className='text-sm'>
-                    <td className='px-4 py-1 border-theme-one border-1'>
+                  <tr className='text-xs'>
+                    <td className='p-1 border-theme-one border-1'>
                       <div className='flex justify-between'>
                         <span>{pair[1]?.amount}</span>{' '}
-                        <span>{(pair[1]?.category!==undefined?("Category: "+ pair[1]?.category):"")}</span>
+                        <span className='text-[.6rem]'>
+                          {pair[1]?.category !== undefined
+                            ? 'Category: ' + pair[1]?.category
+                            : ''}
+                        </span>
                       </div>
                     </td>
-                    <td className='px-4 py-1 border-theme-one border-1'>
+                    <td className='p-1 border-theme-one border-1'>
                       <div className='flex justify-between'>
                         <span>{pair[0]?.amount}</span>{' '}
-                        <span>{(pair[0]?.category!==undefined?("Category: "+ pair[0]?.category):"")}</span>
+                        <span className='text-[.6rem]'>
+                          {pair[0]?.category !== undefined
+                            ? 'Category: ' + pair[0]?.category
+                            : ''}
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -281,6 +308,119 @@ export default function Dashboard () {
               })}
             </tbody>
           </table>
+        </div>
+      </div>
+    )
+  }
+
+  function Charts () {
+    const stats = computeStats(transactions)
+    const RADIAN = Math.PI / 180
+    const [chartType, setChartType] = useState('income')
+    const renderLabel = ({
+      cx,
+      cy,
+      midAngle,
+      innerRadius,
+      outerRadius,
+      name,
+      value
+    }) => {
+      if (
+        cx == null ||
+        cy == null ||
+        innerRadius == null ||
+        outerRadius == null
+      ) {
+        return null
+      }
+      const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+      const ncx = Number(cx)
+      const x = ncx + radius * Math.cos(-(midAngle ?? 0) * RADIAN)
+      const ncy = Number(cy)
+      const y = ncy + radius * Math.sin(-(midAngle ?? 0) * RADIAN)
+
+      return (
+        <text
+          x={x}
+          y={y}
+          fill='white'
+          textAnchor={'middle'}
+          dominantBaseline='central'
+          style={{ fontSize: '.7rem', fontWeight: '600' }}
+        >
+          {`${name[0].toUpperCase() + name.slice(1)}: $${value}`}
+        </text>
+      )
+    }
+
+    return (
+      <div className='grid grid-cols-2 min-h-[500px]'>
+        <PieChart
+          className=''
+          style={{
+            width: '100%',
+            height: '100%',
+            maxWidth: '500px',
+            maxHeight: '80vh'
+          }}
+        >
+          <Pie
+            data={[
+              { name: 'income', value: stats.income },
+              { name: 'expense', value: stats.expense }
+            ]}
+            dataKey={'value'}
+            cx='50%'
+            cy='50%'
+            outerRadius='80%'
+            labelLine={false}
+            label={renderLabel}
+            cornerRadius={'2px'}
+          >
+            <Cell fill='green'></Cell>
+            <Cell fill='red'></Cell>
+          </Pie>
+        </PieChart>
+        <div>
+          <div className='px-2 space-x-1 space-y-2 text-xs grid grid-cols-2 items-center text-right'>
+            <label htmlFor='typeFilter' className='font-semibold'>
+              Type:{' '}
+            </label>
+            <select
+              name=''
+              id='typeFilter'
+              defaultValue='income'
+              className='px-2 py-1 bg-secondary rounded-lg'
+              onChange={e => setChartType(e.target.value)}
+            >
+              <option value='income'>Income</option>
+              <option value='expense'>Expense</option>
+            </select>
+          </div>
+          <PieChart
+            className=''
+            style={{
+              width: '100%',
+              height: '100%',
+              maxWidth: '500px',
+              maxHeight: '80vh'
+            }}
+          >
+            <Pie
+              data={getCategory(transactions, chartType)}
+              dataKey={'value'}
+              cx='50%'
+              cy='50%'
+              outerRadius='80%'
+              labelLine={false}
+              label={renderLabel}
+              cornerRadius={'2px'}
+            >
+              <Cell fill='green'></Cell>
+              <Cell fill='red'></Cell>
+            </Pie>
+          </PieChart>
         </div>
       </div>
     )
@@ -301,8 +441,9 @@ export default function Dashboard () {
       </div>
 
       <TabSection
-        tabList={['List', 'Table']}
-        contentList={[<TransactionList />, <TransactionTable />]}
+        tabList={['List', 'Table', 'Charts']}
+        contentList={[<TransactionList />, <TransactionTable />, <Charts />]}
+        defaultTab={2}
       />
 
       {addTxnModalIsopen && (
