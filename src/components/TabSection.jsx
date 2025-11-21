@@ -9,9 +9,7 @@ export default function TabSection ({ tabList, contentList, defaultTab = 0 }) {
         {tabList.map((t, i) => {
           return (
             <button
-              className={`border-black border-t-${
-                currentTab == i ? '4' : '1'
-              } hover:font-semibold border-l-1 border-r-1 px-1 text-${
+              className={`border-black border-t-1 hover:font-semibold border-l-1 border-r-1 px-1 text-${
                 currentTab == i ? 'sm' : 'xs'
               } font-${currentTab == i ? 'semibold' : 'normal'}`}
               key={'tab'+t+'-'+i}

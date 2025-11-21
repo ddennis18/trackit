@@ -135,14 +135,19 @@ export function PieChartComponent ({ data }) {
         data={data}
         dataKey={'value'}
         cx='50%'
-        cy='50%'
+        cy='40%'
         outerRadius='80%'
         labelLine={false}
         label={renderLabel}
         cornerRadius={'2px'}
       >
         {data.map((d, i) => {
-          return <Cell key={`cell-${d.name+'-'+i.toString()}`} fill={`hsl(${i/N*180},100%,50%)`}></Cell>
+          return (
+            <Cell
+              key={`cell-${d.name + '-' + i.toString()}`}
+              fill={`hsl(${(i / N) * 180},50%,50%)`}
+            ></Cell>
+          )
         })}
       </Pie>{' '}
     </PieChart>
@@ -189,6 +194,7 @@ export default function Dashboard () {
 
   //endregion
 
+  //
   function TransactionList () {
     {
       /*Transactions List*/
@@ -263,7 +269,7 @@ export default function Dashboard () {
             id='startDate'
             type='date'
             defaultValue='1999-01-01'
-            className='px-2 py-1 bg-secondary rounded-lg'
+            className='px-2 py-1 bg-secondary rounded-lg w-min'
             onChange={e => setStartDate(e.target.value)}
           ></input>
           <label htmlFor='endDate' className='font-semibold'>
@@ -273,7 +279,7 @@ export default function Dashboard () {
             name='endDate'
             id='emdDate'
             type='date'
-            className='px-2 py-1 bg-secondary rounded-lg'
+            className='px-2 py-1 bg-secondary rounded-lg w-min'
             onChange={e => setEndDate(e.target.value)}
           ></input>
         </div>
@@ -387,7 +393,7 @@ export default function Dashboard () {
     const [chartType, setChartType] = useState('income')
 
     return (
-      <div className='grid grid-cols-2 min-h-[500px]'>
+      <div className='grid grid-rows-2 md:grid-cols-2 md:grid-rows-1 h-[800px]'>
         <PieChartComponent
           data={[
             { name: 'income', value: stats.income },
@@ -395,7 +401,7 @@ export default function Dashboard () {
           ]}
         ></PieChartComponent>
         <div>
-          <div className='px-2 space-x-1 space-y-2 text-xs grid grid-cols-2 items-center text-right'>
+          <div className='px-2 space-x-1 flex flex-row text-xs justify-start items-center'>
             <label htmlFor='typeFilter' className='font-semibold'>
               Type:{' '}
             </label>
@@ -435,7 +441,7 @@ export default function Dashboard () {
       <TabSection
         tabList={['List', 'Table', 'Charts']}
         contentList={[<TransactionList />, <TransactionTable />, <Charts />]}
-        defaultTab={2}
+        defaultTab={0}
       />
 
       {addTxnModalIsopen && (
