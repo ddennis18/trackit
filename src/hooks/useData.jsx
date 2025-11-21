@@ -1,3 +1,5 @@
+//TODO: clear this no longer needed as supabase is now integrated
+
 import { useState } from 'react'
 
 /*A Hook that saves data to a backend every time the data changes */

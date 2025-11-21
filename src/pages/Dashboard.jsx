@@ -7,6 +7,7 @@ import Modal from '../components/Modal.jsx'
 import NewTxnForm from '../components/Forms.jsx'
 import { useData } from '../hooks/useData.jsx'
 import { Pie, PieChart, Cell, Label, LabelList } from 'recharts'
+import { supabase } from '../supaBaseClient.jsx'
 
 let expenseCategories = ['food', 'transport', 'internet', 'rent']
 let incomeCategories = ['loan', 'friend', 'gift', 'scholarship', 'parent']
@@ -14,14 +15,12 @@ let categories = [...expenseCategories, ...incomeCategories]
 
 //#region utilities
 function formatDate (date) {
-  console.log(date)
   return date.split('-').reverse().join('-')
 }
 
 function txnFilter (t, { type, cat, dateStart, dateEnd }) {
   const typeCheck = type === 'all' || t.type === type
   const categoryCheck = cat === '---' || t.category === cat
-  console.log(dateEnd, dateEnd, 'kl')
   const startDateCheck =
     dateStart === null || new Date(t.timeStamp + ':00.000Z') >= dateStart
   const endDateCheck =
@@ -46,7 +45,6 @@ function zipLongest (...arrays) {
 function txnPair (txns) {
   const incomeList = txns.filter(t => t.type == 'income')
   const expenseList = txns.filter(t => t.type == 'expense')
-  console.log(zipLongest(incomeList, expenseList))
   return zipLongest(incomeList, expenseList)
 }
 
@@ -160,16 +158,7 @@ export default function Dashboard () {
   const [addTxnModalIsopen, setAddTxnModalIsopen] = useState(false)
   const [filterCategory, setFilterCategory] = useState('---')
   const [filterType, setFilterType] = useState('all')
-  const [transactions, setTransactions] = useData([
-    {
-      id: 0,
-      amount: 1,
-      timeStamp: '2024-01-01T00:00',
-      type: 'expense',
-      description: ',',
-      category: '---'
-    }
-  ])
+  const [transactions, setTransactions] = useState([])
   const [sortCriteria, setSortCriteria] = useState('time')
   const [sortOrder, setSortOrder] = useState('desc')
   const [startDate, setStartDate] = useState('01-01-1999')
@@ -194,7 +183,16 @@ export default function Dashboard () {
 
   //endregion
 
-  //
+  //MARK: supabase data fetching on load
+  const fetchData = async () => {
+    const { error, data } = await supabase.from('transactions').select('*')
+    setTransactions(data)
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
+
   function TransactionList () {
     {
       /*Transactions List*/
@@ -448,12 +446,23 @@ export default function Dashboard () {
         <Modal>
           <NewTxnForm
             onClose={() => setAddTxnModalIsopen(false)}
-            appendTxn={t => {
+            appendTxn={async t => {
+              //MARK: append new txn on load
               t.id =
                 transactions.length === 0
                   ? 0
                   : transactions[transactions.length - 1].id + 1
-              setTransactions([...transactions, t])
+
+              const { error, data } = await supabase
+                .from('transactions')
+                .insert(t)
+                .single()
+
+              //no errors
+              if (!error) {
+                setTransactions([...transactions, t])
+              }
+              console.error(error, data)
             }}
             incomeCategories={incomeCategories}
             expenseCategories={expenseCategories}
