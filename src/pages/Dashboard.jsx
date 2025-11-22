@@ -5,7 +5,6 @@ import Transaction from '../components/Transaction.jsx'
 import TabSection from '../components/TabSection.jsx'
 import Modal from '../components/Modal.jsx'
 import NewTxnForm from '../components/Forms.jsx'
-import { useData } from '../hooks/useData.jsx'
 import { Pie, PieChart, Cell, Label, LabelList } from 'recharts'
 import { supabase } from '../supaBaseClient.jsx'
 
@@ -80,6 +79,9 @@ function getCategory (txns, type) {
     .filter(d => d.value != 0)
 }
 
+//#endregion
+
+//MARK: reusable piechart component
 export function PieChartComponent ({ data }) {
   const RADIAN = Math.PI / 180
   const N = data.length
@@ -152,10 +154,14 @@ export function PieChartComponent ({ data }) {
   )
 }
 
-//#endregion
+//MARK:Dashboard Component
 export default function Dashboard () {
   //#region definitions
   const [addTxnModalIsopen, setAddTxnModalIsopen] = useState(false)
+  const [errorState, setErrorState] = useState({
+    isModalOpen: false,
+    message: ''
+  })
   const [filterCategory, setFilterCategory] = useState('---')
   const [filterType, setFilterType] = useState('all')
   const [transactions, setTransactions] = useState([])
@@ -175,17 +181,21 @@ export default function Dashboard () {
 
   const [sortTableCriteria, setTableSortCriteria] = useState('time')
   const [sortTableOrder, setTableSortOrder] = useState('desc')
-
-  useEffect(() => {
-    setTransactions(JSON.parse(localStorage.getItem('txn')) || [])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   //endregion
+
+  const handleError = message => {
+    setErrorState({ isModalOpen: true, message })
+  }
 
   //MARK: supabase data fetching on load
   const fetchData = async () => {
     const { error, data } = await supabase.from('transactions').select('*')
+    if (error) {
+      handleError(
+        'Failed To Fetch Data!, try reloading the page or checking your internet connection '
+      )
+      return
+    }
     setTransactions(data)
   }
 
@@ -193,6 +203,7 @@ export default function Dashboard () {
     fetchData()
   }, [])
 
+  //MARK:Txn List
   function TransactionList () {
     {
       /*Transactions List*/
@@ -313,6 +324,7 @@ export default function Dashboard () {
     )
   }
 
+  //MARK:Txn Table
   function TransactionTable () {
     return (
       <div className='space-y-2'>
@@ -386,6 +398,7 @@ export default function Dashboard () {
     )
   }
 
+  //MARK:Txn charts
   function Charts () {
     const stats = computeStats(transactions)
     const [chartType, setChartType] = useState('income')
@@ -442,6 +455,7 @@ export default function Dashboard () {
         defaultTab={0}
       />
 
+      {/*MARK: Modal For adding Transactions */}
       {addTxnModalIsopen && (
         <Modal>
           <NewTxnForm
@@ -467,6 +481,22 @@ export default function Dashboard () {
             incomeCategories={incomeCategories}
             expenseCategories={expenseCategories}
           />
+        </Modal>
+      )}
+      {errorState.isModalOpen && (
+        <Modal>
+          <div className='p-4 bg-white rounded-xl flex flex-col gap-4 items-center'>
+            <h2 className='font-semibold'>An Error has Occurred!</h2>
+            <p>{errorState.message}</p>
+            <button
+              className='bg-[#ff0000] px-2 py-1 text-white font-semibold w-min rounded-lg'
+              onClick={() =>
+                setErrorState({ ...errorState, isModalOpen: false })
+              }
+            >
+              Close
+            </button>
+          </div>
         </Modal>
       )}
     </div>

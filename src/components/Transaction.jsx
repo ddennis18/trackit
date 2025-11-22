@@ -16,7 +16,7 @@ export default function Transaction ({
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (
-    <div className='border-theme-one border-b-1 grid grid-cols-4 md:grid-cols-6 text-xs items-center px-2 hover:bg-secondary'>
+    <li className='border-theme-one border-b-1 grid grid-cols-4 md:grid-cols-6 text-xs items-center px-2 hover:bg-secondary'>
       <span
         className={`text-${type === 'expense' ? '[#ff0000]' : '[#00ff00]'}`}
       >
@@ -94,6 +94,6 @@ export default function Transaction ({
           </div>
         </Modal>
       )}
-    </div>
+    </li>
   )
 }
