@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useContext } from 'react'
 
 import Profile from '../components/Profile.jsx'
@@ -184,6 +185,7 @@ export default function Dashboard () {
 
   const [sortTableCriteria, setTableSortCriteria] = useState('time')
   const [sortTableOrder, setTableSortOrder] = useState('desc')
+  const [userName, setUserName] = useState('')
   const navigate = useNavigate()
   //endregion
 
@@ -200,13 +202,22 @@ export default function Dashboard () {
       )
       return
     }
+    console.log(data)
     setTransactions(data)
   }
 
+  const fetchUserName = async () => {
+    const {data} = await supabase.from('profile').select().eq('user_id', userData?.id)
+    console.log(data[0].username)
+    return data[0].username
+  }
+
   useEffect(() => {
-    console.log(userData)
+    console.log(userData, 'jkjdjhk')
     if (userData) {
       fetchData()
+      setUserName(fetchUserName())
+      console.log(userName, 'sj')
     } else {
       navigate('/auth')
     }
@@ -214,7 +225,7 @@ export default function Dashboard () {
 
   useEffect(() => {
     console.log(userData)
-    if(userData){
+    if (userData) {
       return
     }
     navigate('/auth')
@@ -327,7 +338,17 @@ export default function Dashboard () {
           ).map(txn => {
             return (
               <Transaction
-                onDelete={() => {
+                onDelete={async () => {
+                  console.log(txn.id, 'id')
+                  const res = await supabase
+                    .from('transactions')
+                    .delete()
+                    .eq('id', txn.id)
+                    .select()
+                  console.log(res)
+                  if (res.error) {
+                    return
+                  }
                   setTransactions([
                     ...transactions.filter(t => t.id !== txn.id)
                   ])
@@ -454,7 +475,7 @@ export default function Dashboard () {
 
   return (
     <div className='space-y-2 w-full'>
-      <Profile userName={userData?.email} {...computeStats(transactions)} />
+      <Profile userName={userName} {...computeStats(transactions)} />
 
       {/*Control buttons*/}
       <div className='space-x-1 pl-2'>
@@ -479,10 +500,7 @@ export default function Dashboard () {
             onClose={() => setAddTxnModalIsopen(false)}
             appendTxn={async t => {
               //MARK: append new txn on load
-              t.id =
-                transactions.length === 0
-                  ? 0
-                  : transactions[transactions.length - 1].id + 1
+              t.user_id = userData.id
 
               const { error, data } = await supabase
                 .from('transactions')

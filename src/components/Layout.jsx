@@ -27,7 +27,7 @@ export function NavBar ({logout}) {
       <nav className='hidden space-x-4 items-center md:block'>
         <Link to='/'>Home</Link>
         <Link to='/dashboard'>Dashboard</Link>
-        <Link to='/about'>About</Link>
+        <a href='https://x.com/dennis_builds'>About</a>
         <Link to='/support'>Support</Link>
       </nav>
       <button className='hidden bg-black text-background px-2 py-1 rounded-full md:block hover:bg-black/80' onClick={logout}>
@@ -47,13 +47,10 @@ export function NavBar ({logout}) {
             <Link to='/dashboard' className='p-4 hover:bg-secondary' onClick={()=>setIsOpen(false)}>
               Dashboard
             </Link>
-            <Link to='/about' className='p-4 hover:bg-secondary' onClick={()=>setIsOpen(false)}>
+            <a href='https://x.com/dennis_builds' className='p-4 hover:bg-secondary' onClick={()=>setIsOpen(false)}>
               About
-            </Link>
-            <Link to='/support' className='p-4 hover:bg-secondary' onClick={()=>setIsOpen(false)}>
-              Services
-            </Link>
-            <button className='text-left p-4 hover:bg-secondary'>Logout</button>
+            </a>
+            <button className='text-left p-4 hover:bg-secondary' onClick={logout}>Logout</button>
           </nav>
         </div>
       )}

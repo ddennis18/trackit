@@ -6,13 +6,13 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { UserDataContext } from '../Contexts'
 
-
 export default function Auth () {
   const [isSignUp, setIsSignUp] = useState(true)
   const navigate = useNavigate()
-  const {setUserData} = useContext(UserDataContext)
+  const { setUserData } = useContext(UserDataContext)
 
   function SignUp () {
+    const [successful, setSuccessful] = useState(false)
     const schema = yup.object().shape({
       userName: yup.string().required(),
       email: yup.string().email().required(),
@@ -35,10 +35,19 @@ export default function Auth () {
     } = useForm({ resolver: yupResolver(schema) })
 
     const submit = async info => {
+      // eslint-disable-next-line no-unused-vars
       const { error, data } = await supabase.auth.signUp({
         email: info.email,
         password: info.password
       })
+
+      if (!error) {
+        const x = await supabase
+          .from('profile')
+          .insert({ username: info.userName, user_id: data.user.id })
+        console.log(x, 'kdkdkdkd')
+        setSuccessful(true)
+      }
     }
 
     return (
@@ -111,6 +120,7 @@ export default function Auth () {
                 sign in
               </button>{' '}
             </p>
+            {successful && <p>Check Your mail for authentication</p>}
             <button
               type='submit'
               className='text-sm font-semibold bg-green-600 w-max p-2 rounded-lg text-background self-center hover:bg-green-600/80'
@@ -152,7 +162,7 @@ export default function Auth () {
 
       if (error) {
         setError('invalid credentials')
-      }else{
+      } else {
         setUserData(data.user)
         navigate('/dashboard')
       }
@@ -161,7 +171,7 @@ export default function Auth () {
     return (
       <div>
         <div className='pt-8 space-y-4 max-w-[300px] mx-auto'>
-          <h1 className='text-center text-4xl font-bold'>Sign Up</h1>
+          <h1 className='text-center text-4xl font-bold'>Sign In</h1>
           <form
             className='p-4 border-theme-one border-1 rounded-2xl flex flex-col gap-1'
             onSubmit={handleSubmit(submit)}
