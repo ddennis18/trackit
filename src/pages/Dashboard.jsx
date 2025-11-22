@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import Profile from '../components/Profile.jsx'
 import Transaction from '../components/Transaction.jsx'
@@ -7,6 +7,8 @@ import Modal from '../components/Modal.jsx'
 import NewTxnForm from '../components/Forms.jsx'
 import { Pie, PieChart, Cell, Label, LabelList } from 'recharts'
 import { supabase } from '../supaBaseClient.jsx'
+import { UserDataContext } from '../Contexts.jsx'
+import { useNavigate } from 'react-router-dom'
 
 let expenseCategories = ['food', 'transport', 'internet', 'rent']
 let incomeCategories = ['loan', 'friend', 'gift', 'scholarship', 'parent']
@@ -178,9 +180,11 @@ export default function Dashboard () {
         .slice(0, 10)
     )
   )
+  const { userData } = useContext(UserDataContext)
 
   const [sortTableCriteria, setTableSortCriteria] = useState('time')
   const [sortTableOrder, setTableSortOrder] = useState('desc')
+  const navigate = useNavigate()
   //endregion
 
   const handleError = message => {
@@ -192,7 +196,7 @@ export default function Dashboard () {
     const { error, data } = await supabase.from('transactions').select('*')
     if (error) {
       handleError(
-        'Failed To Fetch Data!, try reloading the page or checking your internet connection '
+        'Failed To Fetch Data!, try reloading the page or checking your internet connection'
       )
       return
     }
@@ -200,8 +204,21 @@ export default function Dashboard () {
   }
 
   useEffect(() => {
-    fetchData()
+    console.log(userData)
+    if (userData) {
+      fetchData()
+    } else {
+      navigate('/auth')
+    }
   }, [])
+
+  useEffect(() => {
+    console.log(userData)
+    if(userData){
+      return
+    }
+    navigate('/auth')
+  }, [userData])
 
   //MARK:Txn List
   function TransactionList () {
@@ -437,7 +454,7 @@ export default function Dashboard () {
 
   return (
     <div className='space-y-2 w-full'>
-      <Profile userName='User' {...computeStats(transactions)} />
+      <Profile userName={userData?.email} {...computeStats(transactions)} />
 
       {/*Control buttons*/}
       <div className='space-x-1 pl-2'>

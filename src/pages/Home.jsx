@@ -15,7 +15,7 @@ export default function Home () {
         <div className='space-x-4'>
           <Link
             className='bg-primary border-black text-background border-2 p-2 rounded-lg hover:bg-black/80'
-            to='dashboard'
+            to='/auth'
           >
             Get Started
           </Link>

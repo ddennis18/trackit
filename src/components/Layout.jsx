@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import Modal from './Modal'
 
-export default function Layout ({ children }) {
+export default function Layout ({ children, logout }) {
   return (
     <div className=''>
       <header>
-        <NavBar />
+        <NavBar logout={logout}/>
       </header>
       <main className='w-[95%] md:w-[80%] mx-[auto] min-h-[100vh]'>
         {children}
@@ -17,7 +18,7 @@ export default function Layout ({ children }) {
   )
 }
 
-export function NavBar () {
+export function NavBar ({logout}) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -29,8 +30,8 @@ export function NavBar () {
         <Link to='/about'>About</Link>
         <Link to='/support'>Support</Link>
       </nav>
-      <button className='hidden bg-black text-background px-2 py-1 rounded-full md:block hover:bg-black/80'>
-        Login
+      <button className='hidden bg-black text-background px-2 py-1 rounded-full md:block hover:bg-black/80' onClick={logout}>
+        Logout
       </button>
       <button className='md:hidden text-3xl' onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? '×' : '≡'}
